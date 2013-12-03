@@ -133,7 +133,7 @@ namespace Simple.Data.Oracle
                          where p.Direction == ParameterDirection.Output
                          select new {p.ParameterName, p.Value};
             foreach (var o in output)
-                suppliedParameters[o.ParameterName] = o.Value;
+                suppliedParameters[OracleSchemaProvider.GetParameterBaseName(o.ParameterName)] = o.Value;
         }
 
     }

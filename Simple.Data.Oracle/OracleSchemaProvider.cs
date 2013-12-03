@@ -65,5 +65,12 @@ namespace Simple.Data.Oracle
         {
             return _sqlReflection.Schema;
         }
+
+        public static string GetParameterBaseName(string parameterName)
+        {
+            if (string.IsNullOrWhiteSpace(parameterName))
+                throw new ArgumentException("parameterName is not set.");
+            return (parameterName.StartsWith(":")) ? parameterName.Substring(1) : parameterName;
+        }
     }
 }

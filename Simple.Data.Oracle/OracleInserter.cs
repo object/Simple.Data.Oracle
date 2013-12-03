@@ -20,7 +20,11 @@ namespace Simple.Data.Oracle
             
             var tuples = InitializeInsertion(table);
             foreach (var d in data)
-                tuples[d.Key.Homogenize()].InsertedValue = d.Value;
+            {
+                var key = d.Key.Homogenize();
+                if (tuples.ContainsKey(key))
+                tuples[key].InsertedValue = d.Value;
+            }
 
             Func<IDbCommand> command =
                 () =>
@@ -39,7 +43,7 @@ namespace Simple.Data.Oracle
                 cmd.ExecuteNonQuery();
                 var returnData = new DbDictionary();
                 foreach (var it in tuples.Values)
-                    returnData.Add(it.SimpleDataColumn, NormalizeReturningValue((IDbDataParameter)cmd.Parameters[it.ReturningParameterName]));
+                    returnData.Add(it.SimpleDataColumn, NormalizeReturningValue((IDbDataParameter)cmd.Parameters[OracleSchemaProvider.GetParameterBaseName(it.ReturningParameterName)]));
                 data = returnData;
             }
 
