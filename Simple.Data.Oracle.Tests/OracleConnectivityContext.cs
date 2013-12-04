@@ -1,37 +1,50 @@
-﻿using System.Configuration;
+﻿using System;
+using System.Configuration;
+using System.Data.Common;
+using NUnit.Framework;
 using Simple.Data.Ado.Schema;
 using System.Collections.Generic;
 using System.Linq;
-#if DEVART
-using Devart.Data.Oracle;
-#else
-using Oracle.DataAccess.Client;
-#endif
 
 namespace Simple.Data.Oracle.Tests
 {
     internal class OracleConnectivityContext
     {
-        #if DEVART
-        const string ConnectionName = "DevartOracle";
-        #endif
-        #if !DEVART
-        const string ConnectionName = "OracleClient";
-        #endif
+        internal const string OracleClientProvider = "Oracle.DataAccess.Client";
+        internal const string DevartClientProvider = "Devart.Data.Oracle";
+        internal const string OracleManagedDataAccessProvider = "Oracle.ManagedDataAccess";
+
+        private readonly Dictionary<string, Func<OracleConnectionProviderBase>> _connectionProviderFactories = 
+            new Dictionary<string, Func<OracleConnectionProviderBase>>
+        {
+            { OracleClientProvider, () => new Oracle.DataAccess.OracleConnectionProvider()},
+            { DevartClientProvider, () => new Devart.Data.Oracle.OracleConnectionProvider()},
+            { OracleManagedDataAccessProvider, () => new Oracle.ManagedDataAccess.OracleConnectionProvider()},
+        };
+
+        private readonly string[] _unavailableProviders = {OracleClientProvider};
 
         protected dynamic _db;
         protected string _connectionString;
         protected string _providerName;
 
-        public OracleConnectivityContext()
+        protected OracleConnectivityContext(string providerName)
         {
-            _connectionString = ConfigurationManager.ConnectionStrings[ConnectionName].ConnectionString;
-            _providerName = ConfigurationManager.ConnectionStrings[ConnectionName].ProviderName;
+            _connectionString = ConfigurationManager.ConnectionStrings[providerName].ConnectionString;
+            _providerName = ConfigurationManager.ConnectionStrings[providerName].ProviderName;
+        }
+
+        [SetUp]
+        public void SetUp()
+        {
+            if (_unavailableProviders.Contains(_providerName))
+                Assert.Ignore("Provider {0} is not available", _providerName);
         }
 
         protected void InitDynamicDB()
         {
-            _db = Database.Opener.OpenConnection(_connectionString, _providerName);
+            if (!_unavailableProviders.Contains(_providerName))
+                _db = Database.Opener.OpenConnection(_connectionString, _providerName);
         }
 
         protected List<Table> Tables { get; private set; }
@@ -41,9 +54,9 @@ namespace Simple.Data.Oracle.Tests
             return Tables.Single(t => t.ActualName.InvariantEquals(name));
         }
 
-        protected OracleConnectionProvider GetConnectionProvider()
+        protected OracleConnectionProviderBase GetConnectionProvider()
         {
-            var p = new OracleConnectionProvider();
+            var p = _connectionProviderFactories[_providerName].Invoke();
             p.SetConnectionString(_connectionString);
             return p;
         }
@@ -60,10 +73,11 @@ namespace Simple.Data.Oracle.Tests
             return schemaProvider;
         }
 
-        protected OracleCommand GetCommand(string text)
+        protected DbCommand GetCommand(string text)
         {
-            var con = new OracleConnection(_connectionString);
-            var c = new OracleCommand(text, con);
+            var con = GetConnectionProvider().CreateConnection(_connectionString);
+            var c = con.CreateCommand();
+            c.CommandText = text;
             return c;
         }
     }

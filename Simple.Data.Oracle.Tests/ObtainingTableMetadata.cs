@@ -1,13 +1,18 @@
+using System;
 using NUnit.Framework;
 using System.Linq;
 using Simple.Data.Ado.Schema;
 
 namespace Simple.Data.Oracle.Tests
 {
-    [TestFixture]
+    [TestFixture(OracleClientProvider)]
+    [TestFixture(OracleManagedDataAccessProvider)]
+    [TestFixture(DevartClientProvider)]
     internal class ObtainingTableMetadata : OracleConnectivityContext
     {
         private OracleSchemaProvider _sql;
+
+        public ObtainingTableMetadata(string providerName) : base(providerName) { }
 
         [TestFixtureSetUp]
         public void Given()

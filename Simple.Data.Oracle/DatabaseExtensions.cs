@@ -1,29 +1,21 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Common;
 using Simple.Data.Ado.Schema;
 using System.Linq;
-#if DEVART
-using Devart.Data.Oracle;
-#endif
-#if !DEVART
-using Oracle.DataAccess.Client;
-#endif
-
 
 namespace Simple.Data.Oracle
 {
     internal static class DatabaseExtensions
     {
-        
-        
         /// <summary>
         /// http://forums.asp.net/t/791115.aspx/1?ODP+NET+Function+call+with+VARCHAR2+return+value+cause+ERROR
         /// It causes an error to keep a the return value parameter with value null. Hence we pass in a 
         /// value that corresponds to the type of the return parameter. Another Hack is to set the size of
         /// a varchar return value, otherwise it is 0 which cannot contain a lot of characters.
         /// </summary>
-        public static void ConfigureOutputParameterFromArgument(this OracleParameter parameter, Parameter definition)
+        public static void ConfigureOutputParameterFromArgument(this DbParameter parameter, Parameter definition)
         {
             parameter.ParameterName = definition.Name;
             parameter.Direction = definition.Direction;
@@ -48,9 +40,9 @@ namespace Simple.Data.Oracle
             throw new InvalidOperationException("Bad type provided: " + type);
         }
 
-        public static object GetReturnValue(this OracleCommand cmd)
+        public static object GetReturnValue(this DbCommand cmd)
         {
-            var param = cmd.Parameters.OfType<OracleParameter>().FirstOrDefault(p => p.Direction == ParameterDirection.ReturnValue);
+            var param = cmd.Parameters.OfType<DbParameter>().FirstOrDefault(p => p.Direction == ParameterDirection.ReturnValue);
             return param != null ? param.Value : null;
         }
 
@@ -84,7 +76,7 @@ namespace Simple.Data.Oracle
             return s.Equals(other, StringComparison.InvariantCultureIgnoreCase);
         }
 
-        public static IEnumerable<T> ReaderFrom<T>(this OracleConnectionProvider provider, string sqlText, Action<OracleCommand> modCommand, Func<IDataReader, T> select)
+        public static IEnumerable<T> ReaderFrom<T>(this OracleConnectionProviderBase provider, string sqlText, Action<DbCommand> modCommand, Func<IDataReader, T> select)
         {
             using (var cn = provider.CreateOracleConnection())
             {
@@ -101,7 +93,7 @@ namespace Simple.Data.Oracle
             }
         }
 
-        public static IEnumerable<T> ReaderFrom<T>(this OracleConnectionProvider provider, string sqlText, Func<IDataReader, T> select)
+        public static IEnumerable<T> ReaderFrom<T>(this OracleConnectionProviderBase provider, string sqlText, Func<IDataReader, T> select)
         {
             return provider.ReaderFrom(sqlText, _ => { }, select);
         }
@@ -111,6 +103,11 @@ namespace Simple.Data.Oracle
             if (con.State == ConnectionState.Open)
                 return;
             con.Open();
+        }
+
+        public static DbParameter Add(this DbParameterCollection parameters, OracleConnectionProviderBase connectionProvider, string parameterName, object parameterValue)
+        {
+            return connectionProvider.AddToParameterCollection(parameters, parameterName, parameterValue);
         }
     }
 }

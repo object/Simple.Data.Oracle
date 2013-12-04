@@ -5,9 +5,13 @@ using NUnit.Framework;
 
 namespace Simple.Data.Oracle.Tests
 {
-    [TestFixture]
+    [TestFixture(OracleClientProvider)]
+    [TestFixture(OracleManagedDataAccessProvider)]
+    [TestFixture(DevartClientProvider)]
     internal class ExploratoryTesting : OracleConnectivityContext
     {
+        public ExploratoryTesting(string providerName) : base(providerName) { }
+
         [TestFixtureSetUp]
         public void Given()
         {

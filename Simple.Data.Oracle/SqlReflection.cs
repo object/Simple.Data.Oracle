@@ -12,7 +12,7 @@ namespace Simple.Data.Oracle
 {
     internal class SqlReflection
     {
-        private readonly OracleConnectionProvider _provider;
+        private readonly OracleConnectionProviderBase _provider;
         private readonly string _schema;
         private readonly Task _buildData;
         
@@ -23,7 +23,7 @@ namespace Simple.Data.Oracle
         private List<Procedure> _procs;
         private List<Tuple<string, string, Type, ParameterDirection, string>> _args;
 
-        public SqlReflection(OracleConnectionProvider provider)
+        public SqlReflection(OracleConnectionProviderBase provider)
         {
             _provider = provider;
             _schema = ConfigurationManager.AppSettings.AllKeys.Contains("Simple.Data.Oracle.Schema") ? ConfigurationManager.AppSettings["Simple.Data.Oracle.Schema"] : provider.UserOfConnection;
@@ -110,7 +110,7 @@ namespace Simple.Data.Oracle
         private void CreatePrimaryKeys()
         {
             _pks = _provider.ReaderFrom(SqlLoader.PrimaryKeys,
-                                        cmd => cmd.Parameters.Add("1", Schema.ToUpperInvariant()), 
+                                        cmd => cmd.Parameters.Add(_provider, "1", Schema.ToUpperInvariant()), 
                                         r => Tuple.Create(r.GetString(0), r.GetString(1)))
                 .ToList();
         }
@@ -128,10 +128,10 @@ namespace Simple.Data.Oracle
                 _columnsFlat.AddRange(_provider.ReaderFrom(SqlLoader.SchemaColumns,
                                     c =>
                                     {
-                                        c.Parameters.Add("1", Schema.ToUpperInvariant());
-                                        c.Parameters.Add("2", _provider.UserOfConnection.ToUpperInvariant());
-                                        c.Parameters.Add("3", _provider.UserOfConnection.ToUpperInvariant());
-                                        c.Parameters.Add("4", Schema.ToUpperInvariant());
+                                        c.Parameters.Add(_provider, "1", Schema.ToUpperInvariant());
+                                        c.Parameters.Add(_provider, "2", _provider.UserOfConnection.ToUpperInvariant());
+                                        c.Parameters.Add(_provider, "3", _provider.UserOfConnection.ToUpperInvariant());
+                                        c.Parameters.Add(_provider, "4", Schema.ToUpperInvariant());
                                     },
                                     r => Tuple.Create(r.GetString(0), r.GetString(1), DbTypeConverter.FromDataType(r.GetString(2)), Convert.ToInt32(r.GetDecimal(3)))).ToList());
         }
@@ -143,9 +143,9 @@ namespace Simple.Data.Oracle
             if (!Schema.Equals(_provider.UserOfConnection, StringComparison.InvariantCultureIgnoreCase))
                 _tables.AddRange(_provider.ReaderFrom(SqlLoader.TableAccessForSchema, c =>
                 {
-                    c.Parameters.Add("1", _provider.UserOfConnection.ToUpperInvariant());
-                    c.Parameters.Add("2", _provider.UserOfConnection.ToUpperInvariant());
-                    c.Parameters.Add("3", Schema.ToUpperInvariant());
+                    c.Parameters.Add(_provider, "1", _provider.UserOfConnection.ToUpperInvariant());
+                    c.Parameters.Add(_provider, "2", _provider.UserOfConnection.ToUpperInvariant());
+                    c.Parameters.Add(_provider, "3", Schema.ToUpperInvariant());
                 },
                 r => new Table(r.GetString(0), Schema, TableType.Table)).ToList());
             _tables.Add(new Table("DUAL", null, TableType.Table));
@@ -187,7 +187,7 @@ namespace Simple.Data.Oracle
             if (!Schema.Equals(_provider.UserOfConnection, StringComparison.InvariantCultureIgnoreCase))
             {
                 procedures = _provider.ReaderFrom(SqlLoader.SchemaProcedures,
-                                        c => c.Parameters.Add("1", Schema.ToUpperInvariant()),
+                                        c => c.Parameters.Add(_provider, "1", Schema.ToUpperInvariant()),
                                         r => r.GetString(0) + (r.IsDBNull(1) ? "" : "__" + r.GetString(1)));
                 _procs.AddRange((from p in procedures select new Procedure(p, p, Schema.ToUpperInvariant())));
             }
@@ -205,7 +205,7 @@ namespace Simple.Data.Oracle
         private void CreateProcedureArguments()
         {
             var args = _provider.ReaderFrom(SqlLoader.ProcedureArguments,
-                                            c => c.Parameters.Add("1", _provider.UserOfConnection.ToUpperInvariant()),
+                                            c => c.Parameters.Add(_provider, "1", _provider.UserOfConnection.ToUpperInvariant()),
                                             r => new ArgDetails
                                                      {
                                                          Owner = _provider.UserOfConnection.ToUpperInvariant(),
@@ -218,7 +218,7 @@ namespace Simple.Data.Oracle
             if (!Schema.Equals(_provider.UserOfConnection, StringComparison.InvariantCultureIgnoreCase))
             {
                 args.AddRange(_provider.ReaderFrom(SqlLoader.ProcedureArguments,
-                                                      c => c.Parameters.Add("1", Schema.ToUpperInvariant()),
+                                                      c => c.Parameters.Add(_provider, "1", Schema.ToUpperInvariant()),
                                                       r => new ArgDetails
                                                           {
                                                               Owner = Schema.ToUpperInvariant(),

@@ -20,9 +20,13 @@ namespace Simple.Data.Oracle.Tests
         public string LastName { get; set; }
     }
 
-    [TestFixture]
+    [TestFixture(OracleClientProvider)]
+    [TestFixture(OracleManagedDataAccessProvider)]
+    [TestFixture(DevartClientProvider)]
     internal class InsertTests : OracleConnectivityContext
     {
+        public InsertTests(string providerName) : base(providerName) { }
+
         [TestFixtureSetUp]
         public void Given()
         {

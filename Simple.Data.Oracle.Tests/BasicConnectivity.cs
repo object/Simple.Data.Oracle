@@ -1,11 +1,15 @@
-﻿using NUnit.Framework;
+﻿using System;
+using NUnit.Framework;
 
 namespace Simple.Data.Oracle.Tests
 {
-
-    [TestFixture]
+    [TestFixture(OracleClientProvider)]
+    [TestFixture(OracleManagedDataAccessProvider)]
+    [TestFixture(DevartClientProvider)]
     internal class BasicConnectivity : OracleConnectivityContext
     {
+        public BasicConnectivity(string providerName) : base(providerName) { }
+
         [Test]
         public void Basic_connection_to_region()
         {

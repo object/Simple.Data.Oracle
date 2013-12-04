@@ -137,21 +137,9 @@
     <CodeAnalysisFailOnMissingRules>true</CodeAnalysisFailOnMissingRules>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Devart.Data, Version=5.0.302.0, Culture=neutral, PublicKeyToken=09af7300eec23701, processorArchitecture=MSIL" Condition=" '$(UseDevartProvider)' == 'True' ">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\lib\Devart\dotConnect\Oracle\Devart.Data.dll</HintPath>
-    </Reference>
-    <Reference Include="Devart.Data.Oracle, Version=6.30.202.0, Culture=neutral, PublicKeyToken=09af7300eec23701, processorArchitecture=MSIL" Condition=" '$(UseDevartProvider)' == 'True' ">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\lib\Devart.Data.Oracle.dll</HintPath>
-    </Reference>
     <Reference Include="nunit.framework">
       <HintPath>..\packages\NUnit.2.6.2\lib\nunit.framework.dll</HintPath>
       <Private>True</Private>
-    </Reference>
-    <Reference Include="Oracle.DataAccess, Version=10.2.0.100, Culture=neutral, PublicKeyToken=89b483f429c47342" Condition=" '$(UseDevartProvider)' != 'True' ">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\lib\Oracle.DataAccess.dll</HintPath>
     </Reference>
     <Reference Include="Simple.Data">
       <HintPath>..\packages\Simple.Data.Core.0.18.3.1\lib\net40\Simple.Data.dll</HintPath>
@@ -185,6 +173,18 @@
     <Content Include="_hr_schema.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Simple.Data.Devart.Data.Oracle\Simple.Data.Devart.Data.Oracle.csproj">
+      <Project>{7a35accd-169a-46a9-a929-4e7233578bf3}</Project>
+      <Name>Simple.Data.Devart.Data.Oracle</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Simple.Data.Oracle.DataAccess\Simple.Data.Oracle.DataAccess.csproj">
+      <Project>{2301c18f-0e70-4c70-8342-5fd815269633}</Project>
+      <Name>Simple.Data.Oracle.DataAccess</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Simple.Data.Oracle.ManagedDataAccess\Simple.Data.Oracle.ManagedDataAccess.csproj">
+      <Project>{8bdd61bd-81b3-458b-bf58-887a13bb7150}</Project>
+      <Name>Simple.Data.Oracle.ManagedDataAccess</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Simple.Data.Oracle\Simple.Data.Oracle.csproj">
       <Project>{C4E1B507-9F39-43A6-B698-CB2DC77F0808}</Project>
       <Name>Simple.Data.Oracle</Name>

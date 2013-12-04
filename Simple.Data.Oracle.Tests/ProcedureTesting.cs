@@ -1,10 +1,14 @@
+using System;
 using NUnit.Framework;
 
 namespace Simple.Data.Oracle.Tests
 {
-    [TestFixture]
-    internal class ProcedureTesting: OracleConnectivityContext
+    [TestFixture(OracleClientProvider)]
+    [TestFixture(OracleManagedDataAccessProvider)]
+    [TestFixture(DevartClientProvider)]
+    internal class ProcedureTesting : OracleConnectivityContext
     {
+        public ProcedureTesting(string providerName) : base(providerName) { }
 
         [TestFixtureSetUp]
         public void Given()

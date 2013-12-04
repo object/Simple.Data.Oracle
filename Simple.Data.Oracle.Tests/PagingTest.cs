@@ -5,11 +5,15 @@ using NUnit.Framework;
 
 namespace Simple.Data.Oracle.Tests
 {
-    [TestFixture]
+    [TestFixture(OracleClientProvider)]
+    [TestFixture(OracleManagedDataAccessProvider)]
+    [TestFixture(DevartClientProvider)]
     internal class PagingTest : OracleConnectivityContext
     {
         private dynamic _basicQueryWithOrder;
         private dynamic _basicQuery;
+
+        public PagingTest(string providerName) : base(providerName) { }
 
         [TestFixtureSetUp]
         public void Given()

@@ -7,22 +7,17 @@ using System.Linq;
 using Simple.Data.Ado;
 using Simple.Data.Ado.Schema;
 using ResultSet = System.Collections.Generic.IEnumerable<System.Collections.Generic.IDictionary<string, object>>;
-#if DEVART
-using Devart.Data.Oracle;
-#else
-using Oracle.DataAccess.Client;
-#endif
 
 namespace Simple.Data.Oracle
 {
     internal class OracleProcedureExecutor : IProcedureExecutor
     {
-        private readonly OracleConnectionProvider _connectionProvider;
+        private readonly OracleConnectionProviderBase _connectionProvider;
         private readonly ObjectName _procedureName;
         private readonly DatabaseSchema _schema;
         private Func<IDbCommand, IEnumerable<ResultSet>> _executeImpl;
 
-        public OracleProcedureExecutor(OracleConnectionProvider connectionProvider, ObjectName procedureName)
+        public OracleProcedureExecutor(OracleConnectionProviderBase connectionProvider, ObjectName procedureName)
         {
             _connectionProvider = connectionProvider;
             _schema = DatabaseSchema.Get(_connectionProvider, new ProviderHelper());
@@ -44,7 +39,7 @@ namespace Simple.Data.Oracle
             }
 
             var cn = (transaction == null) ? (IDbConnection)_connectionProvider.CreateOracleConnection() : transaction.Connection;
-            var command = cn.CreateCommand() as OracleCommand;
+            var command = cn.CreateCommand() as DbCommand;
             // Double-underscore is used to denote a package name
             command.CommandText = ResolvePackageCallAndQuote(procedure);
             command.CommandType = CommandType.StoredProcedure;
@@ -100,7 +95,7 @@ namespace Simple.Data.Oracle
             throw new InvalidOperationException("Strange state of application around getting the right procedure name");
         }
 
-        private static IEnumerable<ResultSet> ExecuteNonQuery(IDbCommand command)
+        private IEnumerable<ResultSet> ExecuteNonQuery(IDbCommand command)
         {
             command.WriteTrace();
             Trace.TraceInformation("ExecuteNonQuery", "Simple.Data.SqlTest");
@@ -109,7 +104,7 @@ namespace Simple.Data.Oracle
             return Enumerable.Empty<ResultSet>();
         }
 
-        private static void SetParameters(Procedure procedure, OracleCommand cmd, IDictionary<string, object> suppliedParameters)
+        private void SetParameters(Procedure procedure, DbCommand cmd, IDictionary<string, object> suppliedParameters)
         {
             int i = 0;
 
@@ -125,16 +120,16 @@ namespace Simple.Data.Oracle
                 {
                     object value;
                     suppliedParameters.TryGetValue("_" + i, out value);
-                    cmd.Parameters.Add(parameter.Name, value);
+                    cmd.Parameters.Add(_connectionProvider, parameter.Name, value);
                     i++;
                 }
             }
 
         }
 
-        private static void RetrieveOutputParameters(OracleParameterCollection parameters, IDictionary<string, object> suppliedParameters)
+        private void RetrieveOutputParameters(DbParameterCollection parameters, IDictionary<string, object> suppliedParameters)
         {
-            var output = from p in parameters.OfType<OracleParameter>()
+            var output = from p in parameters.OfType<DbParameter>()
                          where p.Direction == ParameterDirection.Output
                          select new {p.ParameterName, p.Value};
             foreach (var o in output)

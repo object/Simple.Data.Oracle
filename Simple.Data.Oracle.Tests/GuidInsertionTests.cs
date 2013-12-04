@@ -11,9 +11,13 @@ namespace Simple.Data.Oracle.Tests
         public Guid RegionUid { get; set; }
     }
 
-    [TestFixture]
+    [TestFixture(OracleClientProvider)]
+    [TestFixture(OracleManagedDataAccessProvider)]
+    [TestFixture(DevartClientProvider)]
     internal class GuidInsertionTests : OracleConnectivityContext
     {
+        public GuidInsertionTests(string providerName) : base(providerName) { }
+
         [TestFixtureSetUp]
         public void Given()
         {

@@ -9,7 +9,7 @@ namespace Simple.Data.Oracle
     {
         private readonly SqlReflection _sqlReflection;
 
-        public OracleSchemaProvider(OracleConnectionProvider connectionProvider)
+        public OracleSchemaProvider(OracleConnectionProviderBase connectionProvider)
         {
             _sqlReflection = new SqlReflection(connectionProvider);
         }

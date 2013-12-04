@@ -138,18 +138,6 @@
     <CodeAnalysisFailOnMissingRules>true</CodeAnalysisFailOnMissingRules>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Devart.Data, Version=5.0.302.0, Culture=neutral, PublicKeyToken=09af7300eec23701, processorArchitecture=MSIL" Condition=" '$(UseDevartProvider)' == 'True' ">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\lib\Devart.Data.dll</HintPath>
-    </Reference>
-    <Reference Include="Devart.Data.Oracle, Version=6.30.202.0, Culture=neutral, PublicKeyToken=09af7300eec23701, processorArchitecture=MSIL" Condition=" '$(UseDevartProvider)' == 'True' ">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\lib\Devart.Data.Oracle.dll</HintPath>
-    </Reference>
-    <Reference Include="Oracle.DataAccess, Version=10.2.0.100, Culture=neutral, PublicKeyToken=89b483f429c47342" Condition=" '$(UseDevartProvider)' != 'True' ">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\lib\Oracle.DataAccess.dll</HintPath>
-    </Reference>
     <Reference Include="Simple.Data, Version=0.18.3.1, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Simple.Data.Core.0.18.3.1\lib\net40\Simple.Data.dll</HintPath>
@@ -168,7 +156,7 @@
   <ItemGroup>
     <Compile Include="DbTypeConverter.cs" />
     <Compile Include="DbDictionary.cs" />
-    <Compile Include="OracleConnectionProvider.cs" />
+    <Compile Include="OracleConnectionProviderBase.cs" />
     <Compile Include="OracleCustomQueryBuilder.cs" />
     <Compile Include="OracleFunctionNameConverter.cs" />
     <Compile Include="OracleInserter.cs" />

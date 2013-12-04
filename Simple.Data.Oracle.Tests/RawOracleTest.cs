@@ -1,15 +1,15 @@
 using System;
 using System.Data;
 using NUnit.Framework;
-#if DEVART
-using Devart.Data.Oracle;
-#endif
 
 namespace Simple.Data.Oracle.Tests
 {
-    [TestFixture]
+    [TestFixture(OracleClientProvider)]
+    [TestFixture(OracleManagedDataAccessProvider)]
+    [TestFixture(DevartClientProvider)]
     internal class RawOracleTest : OracleConnectivityContext
     {
+        public RawOracleTest(string providerName) : base(providerName) { }
 
         [TearDown]
         public void TearDown()
