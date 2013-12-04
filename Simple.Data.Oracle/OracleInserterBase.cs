@@ -41,7 +41,10 @@ namespace Simple.Data.Oracle
                 cmd.ExecuteNonQuery();
                 var returnData = new DbDictionary();
                 foreach (var it in tuples.Values)
-                    returnData.Add(it.SimpleDataColumn, NormalizeReturningValue((IDbDataParameter)cmd.Parameters[OracleSchemaProvider.GetParameterBaseName(it.ReturningParameterName)]));
+                {
+                    var paramName = OracleSchemaProvider.GetParameterBaseName(it.ReturningParameterName);
+                    returnData.Add(it.SimpleDataColumn, NormalizeReturningValue(it.Column, (IDbDataParameter)cmd.Parameters[paramName]));
+                }
                 data = returnData;
             }
 
@@ -88,15 +91,38 @@ namespace Simple.Data.Oracle
             if (value == null)
                 return DBNull.Value;
             if (value is Guid)
-                return ((Guid) t.InsertedValue).ToByteArray();
-            return t.InsertedValue;
+                return ((Guid)value).ToByteArray();
+            return value;
         }
 
-        private static object NormalizeReturningValue(IDbDataParameter dbDataParameter)
+        private static object NormalizeReturningValue(Column column, IDbDataParameter dbDataParameter)
         {
-            if (dbDataParameter.DbType == DbType.Binary && dbDataParameter.Size == 16)
-                return new Guid((byte[])dbDataParameter.Value);
-            return dbDataParameter.Value;
+            var value = dbDataParameter.Value;
+            if (value != null && value != DBNull.Value)
+            {
+                if (dbDataParameter.DbType == DbType.Binary && dbDataParameter.Size == 16)
+                    return new Guid((byte[])value);
+                var converters = new Tuple<DbType, Func<object, object>>[]
+                {
+                    new Tuple<DbType, Func<object, object>>(DbType.Byte, x => Convert.ToByte(x)), 
+                    new Tuple<DbType, Func<object, object>>(DbType.SByte, x => Convert.ToSByte(x)), 
+                    new Tuple<DbType, Func<object, object>>(DbType.Int16, x => Convert.ToInt16(x)), 
+                    new Tuple<DbType, Func<object, object>>(DbType.Int32, x => Convert.ToInt32(x)), 
+                    new Tuple<DbType, Func<object, object>>(DbType.Int64, x => Convert.ToInt64(x)), 
+                    new Tuple<DbType, Func<object, object>>(DbType.UInt16, x => Convert.ToUInt16(x)), 
+                    new Tuple<DbType, Func<object, object>>(DbType.UInt32, x => Convert.ToUInt32(x)), 
+                    new Tuple<DbType, Func<object, object>>(DbType.UInt64, x => Convert.ToUInt64(x)), 
+                    new Tuple<DbType, Func<object, object>>(DbType.Single, x => Convert.ToSingle(x)), 
+                    new Tuple<DbType, Func<object, object>>(DbType.Double, x => Convert.ToDouble(x)), 
+                    new Tuple<DbType, Func<object, object>>(DbType.Decimal, x => Convert.ToDecimal(x)), 
+                };
+                var converter = converters.SingleOrDefault(x => x.Item1 == column.DbType);
+                if (converter != null)
+                {
+                    return converter.Item2(value);
+                }
+            }
+            return value;
         }
 
         private string GetReturningPart(IDictionary<string, InsertTuple> tuples, IDbCommand cmd)
