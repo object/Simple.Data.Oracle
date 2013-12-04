@@ -22,7 +22,7 @@ namespace Simple.Data.Oracle.Tests
             { OracleManagedDataAccessProvider, () => new Oracle.ManagedDataAccess.OracleConnectionProvider()},
         };
 
-        private readonly string[] _unavailableProviders = {OracleClientProvider};
+        protected readonly string[] _unavailableProviders = {OracleClientProvider};
 
         protected dynamic _db;
         protected string _connectionString;
@@ -43,8 +43,7 @@ namespace Simple.Data.Oracle.Tests
 
         protected void InitDynamicDB()
         {
-            if (!_unavailableProviders.Contains(_providerName))
-                _db = Database.Opener.OpenConnection(_connectionString, _providerName);
+            _db = Database.Opener.OpenConnection(_connectionString, _providerName);
         }
 
         protected List<Table> Tables { get; private set; }

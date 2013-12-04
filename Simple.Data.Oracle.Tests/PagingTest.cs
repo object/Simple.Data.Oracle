@@ -18,6 +18,9 @@ namespace Simple.Data.Oracle.Tests
         [TestFixtureSetUp]
         public void Given()
         {
+            if (_unavailableProviders.Contains(_providerName))
+                return;
+
             InitDynamicDB();
             _basicQuery = _db.Employees.All();
             _basicQueryWithOrder = _db.Employees.All().OrderBy(_db.Employees.Last_Name);

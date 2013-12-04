@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using NUnit.Framework;
 
 namespace Simple.Data.Oracle.Tests
@@ -20,13 +21,16 @@ namespace Simple.Data.Oracle.Tests
             {
                 Assert.IsNotNull(r);
                 Assert.IsNotNull(r.RegionId);
-                
+
             }
         }
 
         [TestFixtureSetUp]
         public void Given()
         {
+            if (_unavailableProviders.Contains(_providerName))
+                return;
+
             InitDynamicDB();
         }
     }

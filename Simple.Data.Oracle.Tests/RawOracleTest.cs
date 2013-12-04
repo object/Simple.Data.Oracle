@@ -1,5 +1,6 @@
 using System;
 using System.Data;
+using System.Linq;
 using NUnit.Framework;
 
 namespace Simple.Data.Oracle.Tests
@@ -14,6 +15,9 @@ namespace Simple.Data.Oracle.Tests
         [TearDown]
         public void TearDown()
         {
+            if (_unavailableProviders.Contains(_providerName))
+                return;
+
             using (var c = GetCommand("delete from regions where region_id = 6"))
             {
                 c.Connection.Open();

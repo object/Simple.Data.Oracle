@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Transactions;
 using NUnit.Framework;
 using Simple.Data.Ado;
@@ -30,12 +31,18 @@ namespace Simple.Data.Oracle.Tests
         [TestFixtureSetUp]
         public void Given()
         {
+            if (_unavailableProviders.Contains(_providerName))
+                return;
+
             InitDynamicDB();
         }
 
         [TearDown]
         public void Teardown()
         {
+            if (_unavailableProviders.Contains(_providerName))
+                return;
+
             _db.Regions.DeleteByRegionId(5);
         }
 

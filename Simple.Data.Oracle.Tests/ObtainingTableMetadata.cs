@@ -17,6 +17,9 @@ namespace Simple.Data.Oracle.Tests
         [TestFixtureSetUp]
         public void Given()
         {
+            if (_unavailableProviders.Contains(_providerName))
+                return;
+
             _sql = GetSchemaProvider();
         }
 
