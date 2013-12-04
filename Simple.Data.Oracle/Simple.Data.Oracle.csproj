@@ -157,10 +157,10 @@
     <Compile Include="DbTypeConverter.cs" />
     <Compile Include="DbDictionary.cs" />
     <Compile Include="OracleConnectionProviderBase.cs" />
-    <Compile Include="OracleCustomQueryBuilder.cs" />
+    <Compile Include="OracleCustomQueryBuilderBase.cs" />
     <Compile Include="OracleFunctionNameConverter.cs" />
-    <Compile Include="OracleInserter.cs" />
-    <Compile Include="OraclePager.cs" />
+    <Compile Include="OracleInserterBase.cs" />
+    <Compile Include="OraclePagerBase.cs" />
     <Compile Include="OracleProcedureExecutor.cs" />
     <Compile Include="OracleQueryBuilder.cs" />
     <Compile Include="OracleSchemaProvider.cs" />

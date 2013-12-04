@@ -53,6 +53,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="OracleConnectionProvider.cs" />
+    <Compile Include="OracleCustomQueryBuilder.cs" />
+    <Compile Include="OracleInserter.cs" />
+    <Compile Include="OraclePager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

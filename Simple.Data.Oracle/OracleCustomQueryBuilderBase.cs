@@ -5,8 +5,7 @@ using Simple.Data.Ado;
 
 namespace Simple.Data.Oracle
 {
-    [Export(typeof(ICustomQueryBuilder))]
-    public class OracleCustomQueryBuilder : ICustomQueryBuilder
+    public class OracleCustomQueryBuilderBase : ICustomQueryBuilder
     {
         public ICommandBuilder Build(AdoAdapter adapter, int bulkIndex, SimpleQuery query, out IEnumerable<SimpleQueryClauseBase> unhandledClauses)
         {
