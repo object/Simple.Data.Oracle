@@ -170,6 +170,16 @@
     <Compile Include="RawOracleTest.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Data\hr_analz.sql" />
+    <Content Include="Data\hr_code.sql" />
+    <Content Include="Data\hr_comnt.sql" />
+    <Content Include="Data\hr_cre.sql" />
+    <Content Include="Data\hr_dn_c.sql" />
+    <Content Include="Data\hr_dn_d.sql" />
+    <Content Include="Data\hr_drop.sql" />
+    <Content Include="Data\hr_idx.sql" />
+    <Content Include="Data\hr_main.sql" />
+    <Content Include="Data\hr_popul.sql" />
     <Content Include="_hr_schema.txt" />
   </ItemGroup>
   <ItemGroup>
