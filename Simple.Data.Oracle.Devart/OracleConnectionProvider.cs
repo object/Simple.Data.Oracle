@@ -1,33 +1,30 @@
-﻿using System;
-using System.ComponentModel.Composition;
+﻿using System.ComponentModel.Composition;
 using System.Data.Common;
 using Simple.Data.Ado;
-using Simple.Data.Oracle;
-using OracleClient = Devart.Data.Oracle;
 
-namespace Simple.Data.Devart.Data.Oracle
+namespace Simple.Data.Oracle.Devart
 {
     [Export("Devart.Data.Oracle", typeof(IConnectionProvider))]
     public class OracleConnectionProvider : OracleConnectionProviderBase
     {
         public override DbConnection CreateConnection(string connectionString)
         {
-            return new OracleClient.OracleConnection(connectionString);
+            return new global::Devart.Data.Oracle.OracleConnection(connectionString);
         }
 
         public override DbConnectionStringBuilder CreateConnectionStringBuilder(string connectionString)
         {
-            return new OracleClient.OracleConnectionStringBuilder(connectionString);
+            return new global::Devart.Data.Oracle.OracleConnectionStringBuilder(connectionString);
         }
 
         public override string UserIdOfConnection(string connectionString)
         {
-            return new OracleClient.OracleConnectionStringBuilder(connectionString).UserId.ToUpperInvariant();
+            return new global::Devart.Data.Oracle.OracleConnectionStringBuilder(connectionString).UserId.ToUpperInvariant();
         }
 
         public override DbParameter AddToParameterCollection(DbParameterCollection parameters, string parameterName, object parameterValue)
         {
-            return (parameters as OracleClient.OracleParameterCollection).Add(parameterName, parameterValue);
+            return (parameters as global::Devart.Data.Oracle.OracleParameterCollection).Add(parameterName, parameterValue);
         }
     }
 }

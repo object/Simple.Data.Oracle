@@ -183,9 +183,9 @@
     <Content Include="_hr_schema.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Simple.Data.Devart.Data.Oracle\Simple.Data.Devart.Data.Oracle.csproj">
+    <ProjectReference Include="..\Simple.Data.Oracle.Devart\Simple.Data.Oracle.Devart.csproj">
       <Project>{7a35accd-169a-46a9-a929-4e7233578bf3}</Project>
-      <Name>Simple.Data.Devart.Data.Oracle</Name>
+      <Name>Simple.Data.Oracle.Devart</Name>
     </ProjectReference>
     <ProjectReference Include="..\Simple.Data.Oracle.DataAccess\Simple.Data.Oracle.DataAccess.csproj">
       <Project>{2301c18f-0e70-4c70-8342-5fd815269633}</Project>

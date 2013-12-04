@@ -18,7 +18,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{F713B9
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple.Data.Oracle.DataAccess", "Simple.Data.Oracle.DataAccess\Simple.Data.Oracle.DataAccess.csproj", "{2301C18F-0E70-4C70-8342-5FD815269633}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple.Data.Devart.Data.Oracle", "Simple.Data.Devart.Data.Oracle\Simple.Data.Devart.Data.Oracle.csproj", "{7A35ACCD-169A-46A9-A929-4E7233578BF3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple.Data.Oracle.Devart", "Simple.Data.Oracle.Devart\Simple.Data.Oracle.Devart.csproj", "{7A35ACCD-169A-46A9-A929-4E7233578BF3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Simple.Data.Oracle.ManagedDataAccess", "Simple.Data.Oracle.ManagedDataAccess\Simple.Data.Oracle.ManagedDataAccess.csproj", "{8BDD61BD-81B3-458B-BF58-887A13BB7150}"
 EndProject

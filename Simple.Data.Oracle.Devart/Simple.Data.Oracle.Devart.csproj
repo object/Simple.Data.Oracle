@@ -7,8 +7,8 @@
     <ProjectGuid>{7A35ACCD-169A-46A9-A929-4E7233578BF3}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Simple.Data.Devart.Data.Oracle</RootNamespace>
-    <AssemblyName>Simple.Data.Devart.Data.Oracle</AssemblyName>
+    <RootNamespace>Simple.Data.Oracle.Devart</RootNamespace>
+    <AssemblyName>Simple.Data.Oracle.Devart</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />

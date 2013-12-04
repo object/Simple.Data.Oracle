@@ -6,5 +6,5 @@ namespace Simple.Data.Oracle.ManagedDataAccess
     [Export(typeof(IQueryPager))]
     public class OraclePager : OraclePagerBase
     {
-   }
+    }
 }

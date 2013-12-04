@@ -17,9 +17,9 @@ namespace Simple.Data.Oracle.Tests
         private readonly Dictionary<string, Func<OracleConnectionProviderBase>> _connectionProviderFactories = 
             new Dictionary<string, Func<OracleConnectionProviderBase>>
         {
-            { OracleClientProvider, () => new Oracle.DataAccess.OracleConnectionProvider()},
-            { DevartClientProvider, () => new Devart.Data.Oracle.OracleConnectionProvider()},
-            { OracleManagedDataAccessProvider, () => new Oracle.ManagedDataAccess.OracleConnectionProvider()},
+            { OracleClientProvider, () => new DataAccess.OracleConnectionProvider()},
+            { DevartClientProvider, () => new Devart.OracleConnectionProvider()},
+            { OracleManagedDataAccessProvider, () => new ManagedDataAccess.OracleConnectionProvider()},
         };
 
         protected readonly string[] _unavailableProviders = {OracleClientProvider};
