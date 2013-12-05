@@ -7,6 +7,8 @@ namespace Simple.Data.Oracle.Devart
     [Export("Devart.Data.Oracle", typeof(IConnectionProvider))]
     public class OracleConnectionProvider : OracleConnectionProviderBase
     {
+        private static AssemblyResolver _assemblyResolver = new AssemblyResolver();
+
         public override DbConnection CreateConnection(string connectionString)
         {
             return new global::Devart.Data.Oracle.OracleConnection(connectionString);

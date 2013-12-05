@@ -8,6 +8,8 @@ namespace Simple.Data.Oracle.DataAccess
     [Export("Oracle.DataAccess.Client", typeof(IConnectionProvider))]
     public class OracleConnectionProvider : OracleConnectionProviderBase
     {
+        private static AssemblyResolver _assemblyResolver = new AssemblyResolver();
+
         public override DbConnection CreateConnection(string connectionString)
         {
             return new OracleClient.OracleConnection(connectionString);
