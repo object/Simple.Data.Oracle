@@ -254,7 +254,7 @@ namespace Simple.Data.Oracle
             {
                 try
                 {
-                    var type = arg.DataType.ToClrType(arg.DataPrecision, arg.DataScale);
+                    var type = arg.DataType.ToClrType(0, arg.DataPrecision, arg.DataScale);
                     var direction = arg.Direction.ToParameterDirection(arg.ArgumentName == null);
                     _args.Add(new Tuple<string, string, Type, ParameterDirection, string>(arg.ObjectName, arg.ArgumentName ?? "__ReturnValue", type, direction, arg.Owner));
                 }

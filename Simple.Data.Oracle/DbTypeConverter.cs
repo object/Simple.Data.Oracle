@@ -48,6 +48,7 @@ namespace Simple.Data.Oracle
                     {"NCHAR", typeof (string)},
                     {"VARCHAR2", typeof (string)},
                     {"NVARCHAR2", typeof (string)},
+                    {"RAW", typeof (Guid)},
                     {"BLOB", typeof (byte[])},
                     {"CLOB", typeof (string)},
                     {"NCLOB", typeof (string)},
@@ -65,43 +66,43 @@ namespace Simple.Data.Oracle
                     {"TIMESTAMP WITH LOCAL TIME ZONE", typeof (DateTime)},
                     {"INTERVAL YEAR TO MONTH", typeof (string)},
                     {"INTERVAL DAY TO SECOND", typeof (DateTime)},
-                    {"REF CURSOR", typeof (object)},
                     {"PL/SQL BOOLEAN", typeof (bool)},
+                    {"REF CURSOR", typeof (object)},
                     {"UNDEFINED", typeof(string)}
                 };
 
-        private static readonly Tuple<Func<int, int, bool>, DbType, Type>[] _numberTypes =
+        private static readonly Tuple<Func<int, int, int, bool>, DbType, Type>[] _numberTypes =
                 {
-                    new Tuple<Func<int, int, bool>, DbType, Type>((precision,scale) => scale == 0 && precision == 1, DbType.Boolean, typeof(bool)),
-                    new Tuple<Func<int, int, bool>, DbType, Type>((precision,scale) => scale == 0 && precision >= 2 && precision <= 9, DbType.Int32, typeof(int)),
-                    new Tuple<Func<int, int, bool>, DbType, Type>((precision,scale) => scale == 0 && precision >= 10 && precision <= 18, DbType.Int64, typeof(long)),
-                    new Tuple<Func<int, int, bool>, DbType, Type>((precision,scale) => scale >= 1 && scale <= 15, DbType.Double, typeof(double)),
-                    new Tuple<Func<int, int, bool>, DbType, Type>((precision,scale) => true, DbType.Decimal, typeof(decimal)),
+                    new Tuple<Func<int, int, int, bool>, DbType, Type>((length, precision,scale) => scale == 0 && precision == 1, DbType.Boolean, typeof(bool)),
+                    new Tuple<Func<int, int, int, bool>, DbType, Type>((length, precision,scale) => scale == 0 && precision >= 2 && precision <= 9, DbType.Int32, typeof(int)),
+                    new Tuple<Func<int, int, int, bool>, DbType, Type>((length, precision,scale) => scale == 0 && precision >= 10 && precision <= 18, DbType.Int64, typeof(long)),
+                    new Tuple<Func<int, int, int, bool>, DbType, Type>((length, precision,scale) => scale >= 1 && scale <= 15, DbType.Double, typeof(double)),
+                    new Tuple<Func<int, int, int, bool>, DbType, Type>((length, precision,scale) => true, DbType.Decimal, typeof(decimal)),
                 };
 
-        private static readonly Tuple<Func<int, int, bool>, DbType, Type>[] _rawTypes =
+        private static readonly Tuple<Func<int, int, int, bool>, DbType, Type>[] _rawTypes =
                 {
-                    new Tuple<Func<int, int, bool>, DbType, Type>((precision,scale) => precision == 16, DbType.Guid, typeof(Guid)),
-                    new Tuple<Func<int, int, bool>, DbType, Type>((precision,scale) => true, DbType.Binary, typeof(byte[])),
+                    new Tuple<Func<int, int, int, bool>, DbType, Type>((length, precision,scale) => length == 16, DbType.Guid, typeof(Guid)),
+                    new Tuple<Func<int, int, int, bool>, DbType, Type>((length, precision,scale) => true, DbType.Binary, typeof(byte[])),
                 };
 
-        private static readonly Dictionary<string, IEnumerable<Tuple<Func<int, int, bool>, DbType, Type>>> _typesWithCardinality =
-            new Dictionary<string, IEnumerable<Tuple<Func<int, int, bool>, DbType, Type>>>(StringComparer.InvariantCultureIgnoreCase)
+        private static readonly Dictionary<string, IEnumerable<Tuple<Func<int, int, int, bool>, DbType, Type>>> _typesWithCardinality =
+            new Dictionary<string, IEnumerable<Tuple<Func<int, int, int, bool>, DbType, Type>>>(StringComparer.InvariantCultureIgnoreCase)
                 {
                     {"NUMBER", _numberTypes},
                     {"RAW", _rawTypes},
                 };
 
-        private static bool GetTypeWithCardinality(string dataType, int dataPrecision, int dataScale, out DbType dbType, out Type type)
+        private static bool GetTypeWithCardinality(string dataType, int dataLength, int dataPrecision, int dataScale, out DbType dbType, out Type type)
         {
             dbType = DbType.Object;
             type = typeof(object);
-            IEnumerable<Tuple<Func<int, int, bool>, DbType, Type>> typesWithCardinality;
+            IEnumerable<Tuple<Func<int, int, int, bool>, DbType, Type>> typesWithCardinality;
             if (_typesWithCardinality.TryGetValue(dataType, out typesWithCardinality))
             {
                 foreach (var typeWithCardinality in typesWithCardinality)
                 {
-                    if (typeWithCardinality.Item1(dataPrecision, dataScale))
+                    if (typeWithCardinality.Item1(dataLength, dataPrecision, dataScale))
                     {
                         dbType = typeWithCardinality.Item2;
                         type = typeWithCardinality.Item3;
@@ -119,20 +120,20 @@ namespace Simple.Data.Oracle
             var success = _dbToDbtype.TryGetValue(dataType, out dbType);
             if (!success)
             {
-                success = GetTypeWithCardinality(dataType, dataPrecision, dataScale, out dbType, out type);
+                success = GetTypeWithCardinality(dataType, dataLength, dataPrecision, dataScale, out dbType, out type);
             }
 
             return success ? dbType : DbType.Object;
         }
 
-        public static Type ToClrType(this string dataType, int dataPrecision, int dataScale)
+        public static Type ToClrType(this string dataType, int dataLength, int dataPrecision, int dataScale)
         {
             DbType dbType;
             Type type;
             var success = _dbToClr.TryGetValue(dataType.ToUpperInvariant(), out type);
             if (!success)
             {
-                success = GetTypeWithCardinality(dataType, dataPrecision, dataScale, out dbType, out type);
+                success = GetTypeWithCardinality(dataType, dataLength, dataPrecision, dataScale, out dbType, out type);
             }
 
             if (!success)
