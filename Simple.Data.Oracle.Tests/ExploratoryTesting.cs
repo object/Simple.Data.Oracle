@@ -35,7 +35,7 @@ namespace Simple.Data.Oracle.Tests
         {
             try
             {
-                IEnumerable<dynamic> employees = _db.Employees.FindAll(_db.Employees.Jobs.MinSalary > 20000).OfType<dynamic>();
+                IEnumerable<dynamic> employees = _db.Employees.FindAll(_db.Employees.Jobs.MinSalary >= 20000).OfType<dynamic>();
                 Assert.AreEqual(1, employees.Count());
             }
             catch (MissingMethodException x)
@@ -47,9 +47,9 @@ namespace Simple.Data.Oracle.Tests
         [Test]
         public void ordered_employees_by_date_range()
         {
-            List<dynamic> employees = _db.Employees.FindAllByHireDate("2001-01-01".to("2002-01-01")).OrderByHireDateDescending().ToList();
+            List<dynamic> employees = _db.Employees.FindAllByHireDate("1999-10-01".to("1999-10-31")).OrderByHireDateDescending().ToList();
             Assert.AreEqual(1, employees.Count);
-            Assert.AreEqual(new DateTime(2001, 1, 13), employees[0].HireDate);
+            Assert.AreEqual(new DateTime(1999, 10, 15), employees[0].HireDate);
         }
 
         [Test]

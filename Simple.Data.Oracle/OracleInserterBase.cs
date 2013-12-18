@@ -97,7 +97,7 @@ namespace Simple.Data.Oracle
 
         private static object NormalizeReturningValue(Column column, IDbDataParameter dbDataParameter)
         {
-            var value = dbDataParameter.Value;
+            var value = dbDataParameter == null ? null : dbDataParameter.Value;
             if (value != null && value != DBNull.Value)
             {
                 if (dbDataParameter.DbType == DbType.Binary && dbDataParameter.Size == 16)
